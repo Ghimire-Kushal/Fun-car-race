@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Car Racing Game</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hud" aria-label="Game statistics">
+        <div>
+          <span>Score</span>
+          <strong id="score">0</strong>
+        </div>
+        <div>
+          <span>Time</span>
+          <strong id="time">0s</strong>
+        </div>
+        <div>
+          <span>Level</span>
+          <strong id="level">1</strong>
+        </div>
+        <div>
+          <span>Fuel</span>
+          <strong id="fuel">100%</strong>
+        </div>
+        <div>
+          <span>Lives</span>
+          <strong id="lives">3</strong>
+        </div>
+      </section>
+
+      <section class="game-frame" aria-label="Car racing game">
+        <canvas id="game" width="480" height="720"></canvas>
+
+        <div id="startScreen" class="overlay">
+          <h1>Car Racing</h1>
+          <p>Stay in your lane, dodge traffic, collect coins, and grab fuel before the tank runs dry.</p>
+          <div class="keys" aria-label="Controls">
+            <kbd>←</kbd><kbd>→</kbd><span>or</span><kbd>A</kbd><kbd>D</kbd>
+          </div>
+          <button id="startButton" type="button">Start Race</button>
+        </div>
+
+        <div id="gameOverScreen" class="overlay hidden">
+          <h1>Game Over</h1>
+          <p id="finalResult">Score: 0</p>
+          <button id="restartButton" type="button">Race Again</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="game.js"></script>
+  </body>
+</html>
