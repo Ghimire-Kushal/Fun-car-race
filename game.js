@@ -110,6 +110,7 @@ function spawnItem() {
     size: type === "coin" ? 28 : 34,
   });
 }
+// Check if two rectangles (a and b) are colliding
 
 function hit(a, b) {
   return (
