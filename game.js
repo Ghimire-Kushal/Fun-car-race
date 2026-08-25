@@ -110,7 +110,7 @@ function spawnItem() {
     size: type === "coin" ? 28 : 34,
   });
 }
-// Check if two rectangles (a and b) are colliding./...................
+// Check if two rectangles (a and b) are colliding./......................
 // git commit 
 // git add .
 // git commit -m "Add collision detection and game update logic"
