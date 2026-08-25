@@ -115,7 +115,9 @@ function spawnItem() {
 // git add .
 // git commit -m "Add collision detection and game update logic"
 // git push
-
+// git add .
+// git commit -m "Add collision detection and game update logic"
+// // git push
 
 function hit(a, b) {
   return (
