@@ -11,6 +11,7 @@ const gameOverScreen = document.querySelector("#gameOverScreen");
 const finalResult = document.querySelector("#finalResult");
 const startButton = document.querySelector("#startButton");
 const restartButton = document.querySelector("#restartButton");
+const levelBanner = document.querySelector("#levelBanner");
 
 const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
@@ -44,7 +45,26 @@ const state = {
   keys: new Set(),
 };
 
-const obstacleColors = ["#3ca66f", "#d34c4c", "#4f7fd9", "#e3b13d"];
+const LEVEL_DURATION = 18;
+const levels = [
+  { name: "City Sprint", speed: 270, grass: "#1f7a49", road: "#242932", line: "#f6d44d", traffic: ["#3ca66f", "#d34c4c", "#4f7fd9"], spawn: 1.12, fuelDrain: 3.8 },
+  { name: "Sunset Run", speed: 305, grass: "#a55a2a", road: "#31313a", line: "#ffd365", traffic: ["#ee704f", "#6d7dd8", "#f0bf46"], spawn: 0.94, fuelDrain: 4.2 },
+  { name: "Night Highway", speed: 345, grass: "#102f3c", road: "#161c29", line: "#82d8ff", traffic: ["#a65ad1", "#e75c70", "#35b5c7"], spawn: 0.79, fuelDrain: 4.7 },
+  { name: "Desert Rush", speed: 390, grass: "#b77932", road: "#3a3430", line: "#fff1a6", traffic: ["#d64b45", "#4187c8", "#e2a33a"], spawn: 0.67, fuelDrain: 5.2 },
+  { name: "Final Storm", speed: 440, grass: "#29394c", road: "#1a1e29", line: "#ffffff", traffic: ["#ed4c62", "#7a6be8", "#e6bd39", "#39b98d"], spawn: 0.56, fuelDrain: 5.8 },
+];
+
+function activeLevel() {
+  return levels[(state.level - 1) % levels.length];
+}
+
+function showLevelBanner() {
+  const stage = activeLevel();
+  levelBanner.innerHTML = `<span>Level ${state.level}</span><strong>${stage.name}</strong>`;
+  levelBanner.classList.remove("show");
+  void levelBanner.offsetWidth;
+  levelBanner.classList.add("show");
+}
 
 function resetGame() {
   state.mode = "playing";
@@ -65,6 +85,7 @@ function resetGame() {
   player.invincibleUntil = 0;
   startScreen.classList.add("hidden");
   gameOverScreen.classList.add("hidden");
+  showLevelBanner();
   updateHud();
 }
 
@@ -89,13 +110,14 @@ function movePlayer(direction) {
 }
 
 function spawnObstacle() {
+  const stage = activeLevel();
   const lane = Math.floor(Math.random() * lanes.length);
   state.obstacles.push({
     x: lanes[lane],
     y: -110,
     width: 56,
     height: 90,
-    color: obstacleColors[Math.floor(Math.random() * obstacleColors.length)],
+    color: stage.traffic[Math.floor(Math.random() * stage.traffic.length)],
     passed: false,
   });
 }
@@ -129,18 +151,21 @@ function hit(a, b) {
 function update(dt, now) {
   if (state.mode !== "playing") return;
 
+  const previousLevel = state.level;
   state.elapsed += dt;
-  state.level = 1 + Math.floor(state.elapsed / 14);
-  state.speed = 270 + (state.level - 1) * 32;
+  state.level = 1 + Math.floor(state.elapsed / LEVEL_DURATION);
+  const stage = activeLevel();
+  state.speed = stage.speed + Math.floor((state.level - 1) / levels.length) * 42;
+  if (state.level !== previousLevel) showLevelBanner();
   state.score += dt * (10 + state.level * 3);
-  state.fuel -= dt * (3.8 + state.level * 0.25);
+  state.fuel -= dt * (stage.fuelDrain + Math.floor((state.level - 1) / levels.length) * 0.25);
   state.roadOffset = (state.roadOffset + state.speed * dt) % 96;
   player.x += (player.targetX - player.x) * Math.min(1, dt * 13);
 
   state.obstacleTimer -= dt;
   if (state.obstacleTimer <= 0) {
     spawnObstacle();
-    state.obstacleTimer = Math.max(0.42, 1.05 - state.level * 0.055) + Math.random() * 0.36;
+    state.obstacleTimer = Math.max(0.38, stage.spawn) + Math.random() * 0.3;
   }
 
   state.itemTimer -= dt;
@@ -181,17 +206,18 @@ function update(dt, now) {
 }
 
 function drawRoad() {
-  ctx.fillStyle = "#1f7a49";
+  const stage = activeLevel();
+  ctx.fillStyle = stage.grass;
   ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-  ctx.fillStyle = "#242932";
+  ctx.fillStyle = stage.road;
   ctx.fillRect(roadLeft, 0, roadWidth, HEIGHT);
 
   ctx.fillStyle = "#e5e9f0";
   ctx.fillRect(roadLeft - 7, 0, 7, HEIGHT);
   ctx.fillRect(roadLeft + roadWidth, 0, 7, HEIGHT);
 
-  ctx.strokeStyle = "#f6d44d";
+  ctx.strokeStyle = stage.line;
   ctx.lineWidth = 6;
   ctx.setLineDash([44, 52]);
   ctx.lineDashOffset = -state.roadOffset;

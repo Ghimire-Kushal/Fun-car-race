@@ -113,6 +113,58 @@ body {
   pointer-events: none;
 }
 
+.level-banner {
+  position: absolute;
+  z-index: 3;
+  top: 18px;
+  left: 50%;
+  min-width: 184px;
+  padding: 9px 16px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 11px;
+  background: rgba(8, 12, 21, 0.82);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+  text-align: center;
+  transform: translate(-50%, -24px);
+}
+
+.level-banner span,
+.level-banner strong {
+  display: block;
+}
+
+.level-banner span {
+  color: #a9cfff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.level-banner strong {
+  margin-top: 2px;
+  font-size: 1.15rem;
+}
+
+.level-banner.show {
+  animation: level-announcement 2.4s ease forwards;
+}
+
+@keyframes level-announcement {
+  14%, 78% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -8px);
+  }
+}
+
 canvas {
   display: block;
   width: 100%;
